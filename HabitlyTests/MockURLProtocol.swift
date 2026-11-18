@@ -17,14 +17,19 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
             client?.urlProtocol(self, didFailWithError: URLError(.unsupportedURL))
             return
         }
-        loadingTask = Task { [self] in
+        // URLProtocol / URLProtocolClient are not Sendable in the SDK, so `self` must not be captured by the
+        // `sending` Task closure. Box exactly what the task needs; URLSession only calls back through `client`.
+        let context = UncheckedSendable(value: (protocolInstance: self as URLProtocol, client: client))
+        loadingTask = Task {
+            let instance = context.value.protocolInstance
+            let client = context.value.client
             do {
                 let (response, data) = try await handler(request)
-                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-                client?.urlProtocol(self, didLoad: data)
-                client?.urlProtocolDidFinishLoading(self)
+                client?.urlProtocol(instance, didReceive: response, cacheStoragePolicy: .notAllowed)
+                client?.urlProtocol(instance, didLoad: data)
+                client?.urlProtocolDidFinishLoading(instance)
             } catch {
-                client?.urlProtocol(self, didFailWithError: error)
+                client?.urlProtocol(instance, didFailWithError: error)
             }
         }
     }
@@ -32,6 +37,11 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
     override func stopLoading() {
         loadingTask?.cancel()
     }
+}
+
+/// Test-only escape hatch for handing non-Sendable Foundation objects to a Task.
+struct UncheckedSendable<Value>: @unchecked Sendable {
+    let value: Value
 }
 
 final class HandlerRegistry: @unchecked Sendable {
