@@ -5,7 +5,8 @@ enum PluralCategory: String, Sendable, CaseIterable {
 }
 
 /// Small CLDR cardinal-plural helper for integer counts.
-/// Exact rules for `en` and East-Slavic (`ru`, `uk`, `be`); languages without plural forms → `other`;
+/// Exact rules for `en`, `hy` (Armenian: one for i = 0,1) and East-Slavic (`ru`, `uk`, `be`);
+/// languages without plural forms → `other`;
 /// everything else falls back to the English one/other rule. Lookup always falls back to `_other`.
 enum PluralRules {
     static func category(for count: Int, locale: String) -> PluralCategory {
@@ -18,6 +19,9 @@ enum PluralRules {
             if mod10 == 1 && mod100 != 11 { return .one }
             if (2...4).contains(mod10) && !(12...14).contains(mod100) { return .few }
             return .many
+        case "hy":
+            // CLDR: one → i = 0,1 (integer counts only here); everything else → other.
+            return n <= 1 ? .one : .other
         case "ja", "zh", "ko", "vi", "th", "id", "ms":
             return .other
         default:

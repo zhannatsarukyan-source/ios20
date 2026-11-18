@@ -9,7 +9,7 @@ Source of truth: backend `image/apps/api/src/i18n/locales/<locale>.json` (flat `
 (no Localizable.strings, no .xcstrings, no literals in SwiftUI).
 
 ## Adding a key
-1. Add it to the backend `en.json` **and** `ru.json` (and every other locale file); run `npm run i18n:keys` in `image/`.
+1. Add it to the backend `en.json`, `ru.json` **and** `hy.json` (every locale file); run `npm run i18n:keys` in `image/`.
    Placeholders use `{name}`; plurals use suffixes `_one`, `_few`, `_many`, `_other` (always provide `_other`).
 2. Mirror it in `Habitly/Core/I18n/L10nKey.swift`:
    - normal key → `case habitsFooBar = "habits.foo_bar"` in `L10nKey` (camelCase of the dotted key);
@@ -29,7 +29,7 @@ errorMessage = l10n.message(for: error)  // backend error.message → messageKey
 - Always `Text(verbatim:)` — `Text(someString)` may be treated as a LocalizedStringKey.
 - Dates/numbers: platform formatters with `l10n.swiftLocale` (never concatenate words).
 - A missing key renders the key identifier — a visible developer signal; never ship that.
-- Plural categories come from `PluralRules` (en; ru/uk/be exact; CJK → other; everything else en-style). Lookup falls back to `_other`.
+- Plural categories come from `PluralRules` (en; hy: one for 0 and 1; ru/uk/be exact; CJK → other; everything else en-style). Lookup falls back to `_other`.
 - Adding a language = one JSON file on the backend (with `meta.language_name`). The app lists it from `/i18n/locales`
   automatically; if its plural rules differ from en-style, extend `PluralRules.category`.
 

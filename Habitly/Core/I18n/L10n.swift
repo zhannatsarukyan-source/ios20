@@ -144,6 +144,8 @@ final class L10n {
     }
 
     /// Saved preference → first matching device language → backend default.
+    /// Matching is by language code against whatever `/i18n/locales` returns (en, ru, hy, …), so a device
+    /// language like `hy-AM` or `ru_RU` maps to `hy` / `ru` with no hardcoded locale list.
     private func resolveLocale(available: [String]) -> String {
         if let saved = defaults.string(forKey: Self.preferenceKey), available.isEmpty || available.contains(saved) {
             return saved

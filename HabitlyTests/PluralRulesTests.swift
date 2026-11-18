@@ -14,6 +14,17 @@ struct PluralRulesTests {
         (101, .one), (111, .many), (112, .many), (122, .few),
     ]
 
+    static let armenianCases: [(Int, PluralCategory)] = [
+        (0, .one), (1, .one), (2, .other), (5, .other), (21, .other),
+    ]
+
+    @Test("Armenian: one for 0 and 1", arguments: PluralRulesTests.armenianCases)
+    func armenian(count: Int, expected: PluralCategory) {
+        #expect(PluralRules.category(for: count, locale: "hy") == expected)
+        #expect(PluralRules.category(for: count, locale: "hy-AM") == expected)
+        #expect(PluralRules.category(for: count, locale: "hy_AM") == expected)
+    }
+
     @Test("English: one/other", arguments: PluralRulesTests.englishCases)
     func english(count: Int, expected: PluralCategory) {
         #expect(PluralRules.category(for: count, locale: "en") == expected)
@@ -34,5 +45,6 @@ struct PluralRulesTests {
         #expect(PluralRules.languageCode("pt-BR") == "pt")
         #expect(PluralRules.languageCode("ru_RU") == "ru")
         #expect(PluralRules.languageCode("EN") == "en")
+        #expect(PluralRules.languageCode("hy-AM") == "hy")
     }
 }

@@ -94,6 +94,8 @@ ios/
   keeps the session and surfaces the error.
 - **AppEnvironment.shared** is the single composition root (created once); `AuthStore.start()` is idempotent and cancellation-safe
   (never leaves `.checking`).
+- **Locales** come from `GET /i18n/locales` (currently `en` default, `ru`, `hy`); the picker and initial choice are data-driven.
+  Initial locale: saved preference → first device language whose language code matches an available locale (`hy-AM` → `hy`) → backend default.
 - **i18n cache** files are keyed by the *requested* locale code (normalized lowercase), not by `bundle.locale`.
 - **Tokens** live in the Keychain (`kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`); cleared on first launch after reinstall.
 - **Dates:** timestamps decode from ISO-8601 (with/without fractional seconds); calendar days are `"YYYY-MM-DD"` strings via `DayKey` (device time zone, matches `X-Timezone`).
@@ -118,8 +120,8 @@ l10n.number(5); l10n.percent(0.42); l10n.swiftLocale          // locale-aware fo
 ```
 Placeholder contract (agreed with backend): `dashboard.greeting {name}`, `dashboard.progress {done} {total}`,
 `habits.this_week {done} {target}`, `habits.created {date}`, `habits.delete_confirm_message {name}`,
-`validation.password_min {min}`, `validation.too_long {max}`, `validation.target_range {min} {max}`, plurals `{count}`.
-Adding a key: add it to backend `en.json` + `ru.json` first, then a `case` in `L10nKey` (or base key in `L10nPluralKey`). See `.claude/skills/i18n-keys`.
+`validation.password_min {min}`, `validation.too_long {max}`, `validation.target_range {min} {max}`, plurals `{count}` (categories: en one/other, hy one for 0–1 / other, ru one/few/many; fallback `_other`).
+Adding a key: add it to backend `en.json` + `ru.json` + `hy.json` first, then a `case` in `L10nKey` (or base key in `L10nPluralKey`). See `.claude/skills/i18n-keys`.
 Bootstrap: cached bundle (Application Support/Habitly/i18n) renders instantly, then `If-None-Match` revalidation; no cache + offline → logo + icon-only retry.
 
 ## Liquid Glass guidelines (as used here)
