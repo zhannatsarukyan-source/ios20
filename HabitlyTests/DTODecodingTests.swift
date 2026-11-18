@@ -96,8 +96,9 @@ struct DTODecodingTests {
 
     @Test func encodesPartialUpdateWithoutNulls() throws {
         let data = try JSONCoding.makeEncoder().encode(UpdateHabitInput(name: "Walk"))
-        let object = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
-        #expect(object.keys.sorted() == ["name"])
+        // Keep non-Sendable `[String: Any]` out of the macros: reduce to plain Strings first.
+        let keys = ((try JSONSerialization.jsonObject(with: data) as? [String: Any])?.keys.sorted()) ?? []
+        #expect(keys == ["name"])
     }
 
     @Test func dayKeyRoundTrip() throws {

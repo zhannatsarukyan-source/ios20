@@ -56,12 +56,17 @@ struct L10nCatalogTests {
     }
 
     @Test func keysAreWellFormedIdentifiers() {
-        let pattern = /^[a-z0-9_]+(\.[a-z0-9_]+)+$/
+        // Evaluate outside #expect so the macro never has to capture the (non-Sendable) Regex.
+        func isWellFormed(_ raw: String) -> Bool {
+            raw.wholeMatch(of: /^[a-z0-9_]+(\.[a-z0-9_]+)+$/) != nil
+        }
         for key in L10nKey.allCases {
-            #expect(key.rawValue.wholeMatch(of: pattern) != nil, "Bad key: \(key.rawValue)")
+            let ok = isWellFormed(key.rawValue)
+            #expect(ok, "Bad key: \(key.rawValue)")
         }
         for key in L10nPluralKey.allCases {
-            #expect(key.rawValue.wholeMatch(of: pattern) != nil, "Bad plural key: \(key.rawValue)")
+            let ok = isWellFormed(key.rawValue)
+            #expect(ok, "Bad plural key: \(key.rawValue)")
         }
         #expect(Set(L10nKey.allCases.map(\.rawValue)).count == L10nKey.allCases.count)
     }
