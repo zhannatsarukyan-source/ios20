@@ -1,0 +1,7 @@
+#include "Shared.xcconfig"
+
+// Production API (HTTPS only — no ATS exceptions in Release). Override in CI if needed:
+// xcodebuild ... API_BASE_URL='https:/$()/api.example.com'
+API_BASE_URL = https:/$()/habitly.example.com
+
+INFOPLIST_FILE = Config/Info-Release.plist

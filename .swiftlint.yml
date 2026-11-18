@@ -1,0 +1,63 @@
+included:
+  - Habitly
+  - HabitlyTests
+excluded:
+  - DerivedData
+  - build
+
+disabled_rules:
+  - trailing_comma        # we use trailing commas in multi-line literals
+  - todo
+opt_in_rules:
+  - empty_count
+  - first_where
+  - modifier_order
+  - redundant_nil_coalescing
+  - sorted_imports
+  - toggle_bool
+  - unused_import
+
+line_length:
+  warning: 140
+  error: 180
+type_body_length:
+  warning: 400
+  error: 800
+file_length:
+  warning: 500
+  error: 1000
+identifier_name:
+  excluded: [id, n, to, ns]
+nesting:
+  type_level: 2
+
+# ---- NO-LITERALS rule enforcement (SPEC §1) ----
+custom_rules:
+  no_text_literal:
+    name: "No UI literals"
+    included: 'Habitly/.*.swift'
+    regex: '\b(Text|Label|Button|Toggle|TextField|SecureField|Section|Picker|Stepper|LabeledContent|Link|Menu|Tab)\(\s*"'
+    message: "UI text must come from L10n: use Text(verbatim: l10n.t(.key)) / Label { Text(verbatim:) } icon: { ... }"
+    severity: error
+  no_literal_modifiers:
+    name: "No literal titles/labels"
+    included: 'Habitly/.*.swift'
+    regex: '\.(navigationTitle|accessibilityLabel|accessibilityHint|accessibilityValue|help|alert|confirmationDialog)\(\s*"'
+    message: "Pass Text(verbatim: l10n.t(.key)) instead of a string literal"
+    severity: error
+  no_localized_string:
+    name: "No platform localization"
+    included: 'Habitly/.*.swift'
+    regex: '\b(NSLocalizedString|String\(localized:|LocalizedStringKey\(|LocalizedStringResource\()'
+    message: "Strings come from the backend i18n bundle via L10n — never Localizable.strings / String Catalogs"
+    severity: error
+  text_needs_verbatim:
+    name: "Text needs verbatim"
+    included: 'Habitly/.*.swift'
+    regex: '\bText\((?!verbatim:)(l10n|[a-z][A-Za-z0-9_]*\.)'
+    message: "Use Text(verbatim:) so SwiftUI never treats our strings as localization keys"
+    severity: warning
+
+function_body_length:
+  warning: 80
+  error: 200

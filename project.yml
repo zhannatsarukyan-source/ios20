@@ -1,0 +1,65 @@
+# XcodeGen spec — the .xcodeproj is GENERATED (and git-ignored). Run `xcodegen generate` after
+# adding/removing files or changing settings. Requires XcodeGen >= 2.44 (Xcode 26 aware).
+name: Habitly
+
+options:
+  bundleIdPrefix: com.habitly
+  developmentLanguage: en
+  createIntermediateGroups: true
+  xcodeVersion: "26.0"
+  deploymentTarget:
+    iOS: "26.0"
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_APPROACHABLE_CONCURRENCY: NO
+    SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: NO
+    SWIFT_EMIT_LOC_STRINGS: NO
+
+targets:
+  Habitly:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: Habitly
+    configFiles:
+      Debug: Config/Debug.xcconfig
+      Release: Config/Release.xcconfig
+    settings:
+      base:
+        PRODUCT_NAME: Habitly
+        PRODUCT_BUNDLE_IDENTIFIER: com.habitly.app
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_PREVIEWS: YES
+    scheme:
+      testTargets:
+        - HabitlyTests
+      gatherCoverageData: true
+
+  HabitlyTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: HabitlyTests
+    dependencies:
+      - target: Habitly
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.habitly.app.tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic

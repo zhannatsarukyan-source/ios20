@@ -1,0 +1,5 @@
+// Shared build settings for all configurations of the Habitly app target.
+// NOTE: in xcconfig files `//` starts a comment, so URLs are written as `http:/$()/host`.
+
+MARKETING_VERSION = 1.0.0
+CURRENT_PROJECT_VERSION = 1

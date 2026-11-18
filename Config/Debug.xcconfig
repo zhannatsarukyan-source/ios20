@@ -1,0 +1,10 @@
+#include "Shared.xcconfig"
+
+// Simulator talks to the API running on the Mac host.
+API_BASE_URL = http:/$()/localhost:8080
+
+// Debug-only Info.plist: contains the ATS exception for local networking (localhost).
+INFOPLIST_FILE = Config/Info-Debug.plist
+
+// Optional, git-ignored per-developer overrides (e.g. API_BASE_URL = http:/$()/192.168.1.10:8080 for a device).
+#include? "Local.xcconfig"
